@@ -125,25 +125,29 @@
 
 /* ───────────────────────── Base ───────────────────────── */
 
-@layer base {
-  html {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-  }
+/* Unlayered on purpose: page and body styles must win over any host page defaults. */
+html:root {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
-  body {
-    margin: 0;
-    min-height: 100dvh;
-    background: var(--bg);
-    color: var(--fg);
-    font-size: 14px;
-    line-height: 1.5;
-    overflow-x: hidden;
-  }
+html body {
+  margin: 0;
+  font-family: var(--font-sans);
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+@layer base {
+
 
   h1,
   h2,
@@ -437,9 +441,9 @@
     border-radius: 999px;
     border: 2px solid currentColor;
     opacity: 0;
-    animation: ping 2s var(--ease-out-volt) infinite;
+    animation: volt-ping 2s var(--ease-out-volt) infinite;
   }
-  @keyframes ping {
+  @keyframes volt-ping {
     0% {
       transform: scale(0.6);
       opacity: 0.8;
