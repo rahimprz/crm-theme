@@ -1,0 +1,542 @@
+@import "tailwindcss";
+
+/*
+ * Volt CRM design tokens.
+ * Layout concept: a "control room": quiet ink surfaces, one electric
+ * primary for action, one volt accent for highlights, and light that
+ * follows the cursor across cards.
+ *
+ * Colors are written by src/config/themes.ts at runtime. The values below
+ * are only the first-paint defaults (Dark + Volt).
+ */
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-c3: var(--c3);
+  --color-c4: var(--c4);
+  --color-c5: var(--c5);
+
+  --font-sans:
+    "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-display:
+    "Bricolage Grotesque Variable", "Bricolage Grotesque", "Geist Variable",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    "Geist Mono Variable", "Geist Mono", ui-monospace, "SF Mono", Menlo,
+    Consolas, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.45);
+  --radius-md: calc(var(--radius) * 0.7);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.3);
+  --radius-2xl: calc(var(--radius) * 1.6);
+
+  --ease-volt: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-out-volt: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --bg-base: #08090d;
+  --surface-base: #0f1117;
+  --surface-2-base: #151821;
+  --surface-3-base: #1c202b;
+  --line-base: #1f2330;
+  --line-strong-base: #2c3243;
+  --tint-amt: 5%;
+  --fg: #eef1f7;
+  --muted: #9aa2b5;
+  --faint: #5f677a;
+  --success: #2fd68f;
+  --warning: #ff9f43;
+  --danger: #ff5d6c;
+  --primary: #4c8dff;
+  --primary-fg: #ffffff;
+  --accent: #ffd23f;
+  --accent-fg: #0a0b10;
+  --c3: #34d3a6;
+  --c4: #ff7a59;
+  --c5: #b18cff;
+  --radius: 12px;
+  --row-h: 56px;
+
+  /* Neutrals pick up a hint of the palette's primary color. */
+  --bg: color-mix(in oklab, var(--primary) var(--tint-amt), var(--bg-base));
+  --surface: color-mix(
+    in oklab,
+    var(--primary) var(--tint-amt),
+    var(--surface-base)
+  );
+  --surface-2: color-mix(
+    in oklab,
+    var(--primary) var(--tint-amt),
+    var(--surface-2-base)
+  );
+  --surface-3: color-mix(
+    in oklab,
+    var(--primary) var(--tint-amt),
+    var(--surface-3-base)
+  );
+  --line: color-mix(
+    in oklab,
+    var(--primary) calc(var(--tint-amt) * 2),
+    var(--line-base)
+  );
+  --line-strong: color-mix(
+    in oklab,
+    var(--primary) calc(var(--tint-amt) * 2),
+    var(--line-strong-base)
+  );
+
+  --shadow-card:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.035), 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-pop: 0 24px 60px -12px rgb(0 0 0 / 0.6), 0 0 0 1px var(--line);
+  --glow-primary:
+    0 0 0 1px color-mix(in oklab, var(--primary) 50%, transparent),
+    0 8px 32px -8px color-mix(in oklab, var(--primary) 60%, transparent);
+
+  color-scheme: dark;
+}
+
+:root[data-mode="light"] {
+  --shadow-card:
+    0 1px 2px rgb(16 24 40 / 0.04), 0 4px 18px -10px rgb(16 24 40 / 0.12);
+  --shadow-pop: 0 24px 60px -16px rgb(16 24 40 / 0.25), 0 0 0 1px var(--line);
+}
+
+:root[data-density="compact"] {
+  --row-h: 44px;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ───────────────────────── Components ───────────────────────── */
+
+@layer components {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .font-display {
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ───────────────────────── Surfaces ───────────────────────── */
+
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--surface) 72%, transparent);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+  }
+
+  .popover {
+    background: color-mix(in oklab, var(--surface-2) 92%, transparent);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-pop);
+  }
+
+  /* Cursor-following light. Pointer position is written to --mx/--my by useSpotlight(). */
+  .spotlight {
+    isolation: isolate;
+  }
+  .spotlight::before,
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-volt);
+    z-index: -1;
+  }
+  .spotlight::before {
+    inset: 0;
+    background: radial-gradient(
+      480px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--primary) 9%, transparent),
+      transparent 42%
+    );
+  }
+  .spotlight::after {
+    inset: -1px;
+    padding: 1px;
+    background: radial-gradient(
+      280px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--primary) 70%, transparent),
+      color-mix(in oklab, var(--accent) 25%, transparent) 30%,
+      transparent 55%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  /* A beam of light that travels around the border. */
+  .beam {
+    isolation: isolate;
+  }
+  .beam::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--beam-angle),
+      transparent 0 62%,
+      color-mix(in oklab, var(--primary) 90%, transparent) 78%,
+      var(--accent) 88%,
+      transparent 96%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-spin 5s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+  @keyframes beam-spin {
+    to {
+      --beam-angle: 360deg;
+    }
+  }
+
+  /* Faint engineering grid, faded at the edges. */
+  .grid-bg {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--fg) 5%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--fg) 5%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 44px 44px;
+    mask-image: radial-gradient(
+      ellipse 80% 70% at 50% 0%,
+      #000 30%,
+      transparent 75%
+    );
+  }
+
+  /* Film grain over the whole app. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  :root[data-mode="light"] .grain {
+    opacity: 0.025;
+  }
+
+  /* Slow drifting color fields behind hero areas. */
+  .aurora {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .aurora span {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(70px);
+    opacity: 0.32;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  :root[data-mode="light"] .aurora span {
+    opacity: 0.22;
+  }
+  .aurora span:nth-child(1) {
+    width: 46%;
+    aspect-ratio: 1;
+    background: var(--primary);
+    top: -30%;
+    left: -8%;
+  }
+  .aurora span:nth-child(2) {
+    width: 32%;
+    aspect-ratio: 1;
+    background: var(--accent);
+    top: -20%;
+    right: 6%;
+    opacity: 0.18;
+    animation-duration: 22s;
+    animation-delay: -6s;
+  }
+  .aurora span:nth-child(3) {
+    width: 30%;
+    aspect-ratio: 1;
+    background: var(--c5);
+    bottom: -40%;
+    left: 38%;
+    opacity: 0.14;
+    animation-duration: 26s;
+    animation-delay: -12s;
+  }
+  @keyframes drift {
+    0% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(8%, 10%, 0) scale(1.12);
+    }
+    100% {
+      transform: translate3d(-6%, 4%, 0) scale(0.94);
+    }
+  }
+
+  /* Gradient text used for the AI assistant and the logo wordmark accent. */
+  .text-volt {
+    background: linear-gradient(
+      100deg,
+      var(--primary),
+      var(--accent) 55%,
+      var(--primary)
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine 6s linear infinite;
+  }
+  @keyframes shine {
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--surface-2),
+      var(--surface-3),
+      var(--surface-2)
+    );
+    background-size: 200% 100%;
+    animation: shine 1.6s linear infinite;
+  }
+
+  /* Status pulse for live dots. */
+  .pulse-dot {
+    position: relative;
+  }
+  .pulse-dot::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 999px;
+    border: 2px solid currentColor;
+    opacity: 0;
+    animation: ping 2s var(--ease-out-volt) infinite;
+  }
+  @keyframes ping {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  /* Workflow connector flow. */
+  .flow-line {
+    stroke-dasharray: 6 8;
+    animation: flow 1.2s linear infinite;
+  }
+  @keyframes flow {
+    to {
+      stroke-dashoffset: -28;
+    }
+  }
+
+  .kbd {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1;
+    padding: 3px 5px;
+    min-width: 18px;
+    text-align: center;
+    border-radius: 5px;
+    color: var(--muted);
+    background: var(--surface-3);
+    border: 1px solid var(--line-strong);
+    border-bottom-width: 2px;
+  }
+
+  /* Hide scrollbars on horizontal chip rails while keeping them scrollable. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Theme switch sweep (View Transitions API). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* ───────────────────────── Motion preferences ───────────────────────── */
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@layer components {
+  .tooltip-in {
+    animation: tooltip-in 0.18s var(--ease-out-volt);
+  }
+}
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+.toast-timer {
+  width: 100%;
+  animation: toast-timer var(--toast-dur, 4s) linear forwards !important;
+}
+:root[data-motion="reduced"] .toast-timer {
+  animation-duration: var(--toast-dur, 4s) !important;
+}
+@keyframes toast-timer {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
