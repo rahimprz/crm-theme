@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Plus, Kanban, Table2, Search, CircleDollarSign, Scale, Trophy, Ruler, Percent } from 'lucide-react'
 import { useCrm, memberById } from '@/store/crm'
 import { useUI } from '@/store/ui'
@@ -33,7 +34,7 @@ function Summary({ deals }: { deals: Deal[] }) {
     { icon: <Percent />, label: 'Win rate', value: (won.length / Math.max(1, won.length + lost.length)) * 100, format: 'percent' as const, color: 'var(--c5)' },
   ]
   return (
-    <div className="card mb-5 grid grid-cols-2 divide-line sm:grid-cols-3 lg:grid-cols-5 lg:divide-x">
+    <div className="card mb-5 grid grid-cols-2 divide-line sm:grid-cols-3 xl:grid-cols-5 xl:divide-x">
       {stats.map((s, i) => (
         <div key={s.label} className={cn('flex items-center gap-3 p-4', i === 4 && 'col-span-2 sm:col-span-1')}>
           <span className="flex size-9 shrink-0 items-center justify-center rounded-lg [&_svg]:size-4" style={{ background: `color-mix(in oklab, ${s.color} 15%, transparent)`, color: s.color }}>
@@ -56,7 +57,13 @@ export default function Deals() {
   const openQuickCreate = useUI((s) => s.openQuickCreate)
   const openDrawer = useUI((s) => s.openDrawer)
   const [layout, setLayout] = useState<'board' | 'table'>('board')
-  const [owners, setOwners] = useState<string[]>([])
+  const location = useLocation()
+  const routeOwners = (location.state as { owners?: string[] } | null)?.owners
+  const [owners, setOwners] = useState<string[]>(routeOwners ?? [])
+  useEffect(() => {
+    if (routeOwners) setOwners(routeOwners)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key])
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {

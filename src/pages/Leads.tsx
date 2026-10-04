@@ -1,4 +1,5 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import {
   Plus,
   Upload,
@@ -158,7 +159,13 @@ export default function Leads() {
   const convertLead = useCrm((s) => s.convertLead)
   const openDrawer = useUI((s) => s.openDrawer)
   const openQuickCreate = useUI((s) => s.openQuickCreate)
-  const [view, setView] = useState<View>('all')
+  const location = useLocation()
+  const routeView = (location.state as { view?: View } | null)?.view
+  const [view, setView] = useState<View>(routeView ?? 'all')
+  // Saved views in the sidebar pass a preset through router state.
+  useEffect(() => {
+    if (routeView) setView(routeView)
+  }, [location.key, routeView])
   const [layout, setLayout] = useState<'table' | 'board'>('table')
   const [query, setQuery] = useState('')
   const [statuses, setStatuses] = useState<LeadStatus[]>([])
@@ -242,7 +249,7 @@ export default function Leads() {
       </div>
 
       <div className="card overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-line px-4 pt-2 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-col gap-3 border-b border-line px-4 pt-2 xl:flex-row xl:items-center xl:justify-between">
           <Tabs
             className="border-0"
             value={view}
@@ -257,7 +264,7 @@ export default function Leads() {
               { value: 'mine', label: 'Mine', count: counts.mine },
             ]}
           />
-          <div className="flex flex-wrap items-center gap-2 pb-3 lg:pb-0">
+          <div className="flex flex-wrap items-center gap-2 pb-3 xl:pb-0">
             <div className="w-full sm:w-56">
               <Input id="lead-search" icon={<Search />} placeholder="Search leads…" value={query} onChange={(e) => setQuery(e.target.value)} className="h-9" />
             </div>

@@ -45,6 +45,7 @@ import { Checkbox } from '@/components/ui/Checkbox'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { gsap, reducedMotion, useGSAP } from '@/lib/gsap'
 import { cn } from '@/lib/cn'
+import { sidebarSections, type SidebarSection } from '@/config/app'
 
 type Section = 'appearance' | 'notifications' | 'workspace' | 'integrations' | 'api' | 'billing'
 
@@ -190,6 +191,31 @@ function Appearance() {
           </div>
         </Panel>
       </div>
+
+      <Panel
+        title="Sidebar"
+        description="Choose what the sidebar shows. Content itself lives in src/config/navigation.ts and src/config/app.ts."
+        action={
+          t.collapsedGroups.length > 0 ? (
+            <Button variant="ghost" size="sm" onClick={() => { t.collapsedGroups.forEach((g) => t.toggleGroup(g)); toast.success('All sidebar groups expanded') }}>
+              Unfold all groups
+            </Button>
+          ) : undefined
+        }
+      >
+        <div className="grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
+          {(Object.keys(sidebarSections) as SidebarSection[]).map((k) => (
+            <Switch
+              key={k}
+              id={`side-${k}`}
+              label={sidebarSections[k].label}
+              description={sidebarSections[k].description}
+              checked={t.sections[k]}
+              onChange={(v) => t.setSection(k, v)}
+            />
+          ))}
+        </div>
+      </Panel>
 
       <Panel title="Live preview" description="Components in your current theme.">
         <div className="flex flex-wrap items-center gap-3">

@@ -14,6 +14,7 @@ import {
 } from '@dnd-kit/core'
 import { Plus } from 'lucide-react'
 import { gsap, useGSAP, reducedMotion } from '@/lib/gsap'
+import { useScrollEdges } from '@/hooks/useScrollEdges'
 import { cn } from '@/lib/cn'
 
 export interface KanbanColumn<T> {
@@ -109,6 +110,7 @@ function Column<T>({
  */
 export function KanbanBoard<T>({ columns, getId, renderCard, onMove, onAdd }: Props<T>) {
   const ref = useRef<HTMLDivElement>(null)
+  const [scroller, edges] = useScrollEdges<HTMLDivElement>('x')
   const [active, setActive] = useState<T | null>(null)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -145,10 +147,15 @@ export function KanbanBoard<T>({ columns, getId, renderCard, onMove, onAdd }: Pr
 
   return (
     <DndContext sensors={sensors} onDragStart={onStart} onDragEnd={onEnd} onDragCancel={() => setActive(null)}>
-      <div ref={ref} className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 md:mx-0 md:px-0">
-        {columns.map((col) => (
-          <Column key={col.id} col={col} getId={getId} renderCard={renderCard} onAdd={onAdd} />
-        ))}
+      <div ref={ref} className="relative -mx-4 md:mx-0">
+        {/* Fades hint that more columns are off-screen. */}
+        <span aria-hidden className={`pointer-events-none absolute inset-y-0 left-0 z-[2] w-10 bg-gradient-to-r from-[var(--bg)] to-transparent transition-opacity duration-300 ${edges.start ? 'opacity-100' : 'opacity-0'}`} />
+        <span aria-hidden className={`pointer-events-none absolute inset-y-0 right-0 z-[2] w-16 bg-gradient-to-l from-[var(--bg)] to-transparent transition-opacity duration-300 ${edges.end ? 'opacity-100' : 'opacity-0'}`} />
+        <div ref={scroller} className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 md:px-0">
+          {columns.map((col) => (
+            <Column key={col.id} col={col} getId={getId} renderCard={renderCard} onAdd={onAdd} />
+          ))}
+        </div>
       </div>
       <DragOverlay dropAnimation={{ duration: 280, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }}>
         {active ? (

@@ -1,5 +1,5 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Plus, Search, LayoutGrid, Rows3, Mail, Phone, Star, MapPin, SearchX } from 'lucide-react'
 import { useCrm } from '@/store/crm'
 import { useUI } from '@/store/ui'
@@ -31,7 +31,12 @@ export default function Contacts() {
   const openQuickCreate = useUI((s) => s.openQuickCreate)
   const navigate = useNavigate()
   const [layout, setLayout] = useState<'grid' | 'list'>('grid')
-  const [stage, setStage] = useState<ContactStage | 'all'>('all')
+  const location = useLocation()
+  const routeStage = (location.state as { stage?: ContactStage } | null)?.stage
+  const [stage, setStage] = useState<ContactStage | 'all'>(routeStage ?? 'all')
+  useEffect(() => {
+    if (routeStage) setStage(routeStage)
+  }, [location.key, routeStage])
   const [query, setQuery] = useState('')
   const grid = useRef<HTMLDivElement>(null)
   const flipState = useRef<Flip.FlipState | null>(null)

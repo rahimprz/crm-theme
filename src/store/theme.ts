@@ -3,9 +3,15 @@ import { persist } from 'zustand/middleware'
 import { flushSync } from 'react-dom'
 import { applyTheme, DEFAULT_THEME, getMode, type ModeId, type RadiusId } from '@/config/themes'
 import { safeStorage } from './storage'
+import { sidebarSections, type SidebarSection } from '@/config/app'
 
 export type Motion = 'full' | 'reduced'
 export type Density = 'comfortable' | 'compact'
+export type Status = 'online' | 'away' | 'dnd'
+
+const defaultSections = Object.fromEntries(
+  Object.entries(sidebarSections).map(([k, v]) => [k, v.default]),
+) as Record<SidebarSection, boolean>
 
 interface ThemeState {
   mode: ModeId
@@ -15,6 +21,12 @@ interface ThemeState {
   density: Density
   sidebarCollapsed: boolean
   grain: boolean
+  /** Sidebar groups the user folded away. */
+  collapsedGroups: string[]
+  /** Which optional sidebar sections are visible. */
+  sections: Record<SidebarSection, boolean>
+  /** Your presence status, shown on your avatar. */
+  status: Status
   setMode: (mode: ModeId, origin?: Origin) => void
   toggleMode: (origin?: Origin) => void
   setPalette: (palette: string, origin?: Origin) => void
@@ -23,6 +35,9 @@ interface ThemeState {
   setDensity: (density: Density) => void
   toggleSidebar: () => void
   setGrain: (on: boolean) => void
+  toggleGroup: (id: string) => void
+  setSection: (id: SidebarSection, on: boolean) => void
+  setStatus: (status: Status) => void
 }
 
 type Origin = { x: number; y: number }
@@ -70,6 +85,9 @@ export const useTheme = create<ThemeState>()(
         density: 'comfortable',
         sidebarCollapsed: false,
         grain: true,
+        collapsedGroups: [],
+        sections: defaultSections,
+        status: 'online',
         setMode: (mode, origin) => transition(() => commit({ mode }), origin),
         toggleMode: (origin) => {
           const next: ModeId = getMode(get().mode).isDark ? 'light' : 'dark'
@@ -87,9 +105,23 @@ export const useTheme = create<ThemeState>()(
         },
         toggleSidebar: () => set({ sidebarCollapsed: !get().sidebarCollapsed }),
         setGrain: (grain) => set({ grain }),
+        toggleGroup: (id) => {
+          const g = get().collapsedGroups
+          set({ collapsedGroups: g.includes(id) ? g.filter((x) => x !== id) : [...g, id] })
+        },
+        setSection: (id, on) => set({ sections: { ...get().sections, [id]: on } }),
+        setStatus: (status) => set({ status }),
       }
     },
-    { name: 'volt-theme', storage: safeStorage },
+    {
+      name: 'volt-theme',
+      storage: safeStorage,
+      // Keep newly added sidebar sections switched on for returning visitors.
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<ThemeState>
+        return { ...current, ...p, sections: { ...current.sections, ...(p.sections ?? {}) } }
+      },
+    },
   ),
 )
 

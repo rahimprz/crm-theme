@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { gsap, useGSAP, reducedMotion } from '@/lib/gsap'
 import { cn } from '@/lib/cn'
+import { brand } from '@/config/app'
 
 /** Volt brand mark. The bolt strikes in on load and re-charges on hover. */
 export function Logo({ collapsed, className }: { collapsed?: boolean; className?: string }) {
@@ -44,11 +45,14 @@ export function Logo({ collapsed, className }: { collapsed?: boolean; className?
           />
         </svg>
       </span>
-      {!collapsed && (
-        <span data-word className="font-display text-[19px] font-semibold tracking-[-0.03em] text-fg">
-          Volt<span className="text-accent">.</span>
+      <span
+        className={cn('font-display text-[19px] font-semibold tracking-[-0.03em] whitespace-nowrap text-fg transition-[opacity,transform] duration-300', collapsed ? '-translate-x-1 opacity-0' : 'opacity-100')}
+      >
+        <span data-word className="inline-block">
+          {brand.name}
+          <span className="text-accent">.</span>
         </span>
-      )}
+      </span>
     </div>
   )
 }

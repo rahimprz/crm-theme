@@ -50,6 +50,34 @@ function Breadcrumb() {
   )
 }
 
+/** Thin electric bar that sweeps across under the topbar on every page change. */
+function RouteProgress() {
+  const { pathname } = useLocation()
+  const bar = useRef<HTMLSpanElement>(null)
+  const first = useRef(true)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (!bar.current || reducedMotion()) return
+    gsap
+      .timeline()
+      .set(bar.current, { scaleX: 0, opacity: 1, transformOrigin: '0% 50%' })
+      .to(bar.current, { scaleX: 0.7, duration: 0.35, ease: 'power2.out' })
+      .to(bar.current, { scaleX: 1, duration: 0.25, ease: 'power1.in' })
+      .to(bar.current, { opacity: 0, duration: 0.3 })
+  }, [pathname])
+  return (
+    <span
+      ref={bar}
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 -bottom-px h-[2px] opacity-0"
+      style={{ background: 'linear-gradient(90deg, var(--primary), var(--accent))', boxShadow: '0 0 12px var(--primary)' }}
+    />
+  )
+}
+
 function NotificationBell() {
   const unread = useCrm((s) => s.notifications.filter((n) => !n.read).length)
   const bell = useRef<SVGSVGElement>(null)
@@ -107,7 +135,7 @@ export function Topbar() {
         <button
           type="button"
           onClick={() => setCommandOpen(true)}
-          className="group ml-auto hidden h-9 w-[min(340px,32vw)] items-center gap-2.5 rounded-lg border border-line bg-surface-2/70 px-3 text-[13px] text-faint transition-all hover:border-line-strong hover:text-muted lg:flex"
+          className="group ml-auto hidden h-9 w-[min(340px,32vw)] items-center gap-2.5 rounded-lg border border-line bg-surface-2/70 px-3 text-[13px] text-faint transition-all hover:border-line-strong hover:text-muted xl:flex"
         >
           <Search className="size-4" />
           <span className="flex-1 text-left">Search or jump to…</span>
@@ -115,11 +143,11 @@ export function Topbar() {
           <Kbd>K</Kbd>
         </button>
 
-        <div className="ml-auto flex items-center gap-1 lg:ml-2">
+        <div className="ml-auto flex shrink-0 items-center gap-1 xl:ml-2">
           <button
             type="button"
             onClick={() => setCommandOpen(true)}
-            className="flex size-9 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-fg lg:hidden"
+            className="flex size-9 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-fg xl:hidden"
             aria-label="Search"
           >
             <Search className="size-[18px]" />
@@ -149,6 +177,7 @@ export function Topbar() {
           </Button>
         </div>
       </div>
+      <RouteProgress />
     </header>
   )
 }

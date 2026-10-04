@@ -7,11 +7,14 @@ export function Tooltip({
   children,
   side = 'top',
   disabled,
+  className,
 }: {
   content: ReactNode
   children: ReactNode
   side?: 'top' | 'right' | 'bottom'
   disabled?: boolean
+  /** Classes for the wrapper (e.g. "flex w-full" to let the trigger stretch). */
+  className?: string
 }) {
   const ref = useRef<HTMLSpanElement>(null)
   const timer = useRef<number>(0)
@@ -34,7 +37,7 @@ export function Tooltip({
   }
 
   return (
-    <span ref={ref} className="inline-flex" onMouseEnter={show} onMouseLeave={hide} onFocus={show} onBlur={hide}>
+    <span ref={ref} className={className ?? 'inline-flex'} onMouseEnter={show} onMouseLeave={hide} onFocus={show} onBlur={hide}>
       {children}
       {pos &&
         createPortal(

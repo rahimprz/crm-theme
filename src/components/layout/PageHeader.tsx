@@ -30,7 +30,7 @@ export function PageHeader({
     { scope: ref },
   )
   return (
-    <div ref={ref} className={cn('mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between', className)}>
+    <div ref={ref} className={cn('mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between', className)}>
       <div className="min-w-0">
         {eyebrow && (
           <div className="eyebrow mb-2" data-sub>
@@ -47,7 +47,7 @@ export function PageHeader({
         )}
       </div>
       {actions && (
-        <div data-sub className="flex flex-wrap items-center gap-2">
+        <div data-sub className="flex shrink-0 flex-wrap items-center gap-2">
           {actions}
         </div>
       )}

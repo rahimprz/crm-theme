@@ -67,7 +67,7 @@ export function DashboardHero({ range, onRange }: { range: RangeId; onRange: (r:
         <span />
       </div>
       <div className="grid-bg absolute inset-0 opacity-70" aria-hidden />
-      <div data-hero-content className="relative grid gap-8 p-6 md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+      <div data-hero-content className="relative grid gap-8 p-6 md:p-8 xl:grid-cols-[1fr_auto] xl:items-center">
         <div className="min-w-0">
           <div className="eyebrow flex items-center gap-2" data-hero-in>
             <span className="pulse-dot size-1.5 rounded-full bg-success text-success" />
@@ -102,7 +102,7 @@ export function DashboardHero({ range, onRange }: { range: RangeId; onRange: (r:
             <Button variant="secondary" size="lg" icon={<Kanban />} onClick={() => navigate('/deals')}>
               Open pipeline
             </Button>
-            <SegmentedControl className="ml-auto lg:ml-3" value={range} onChange={onRange} ariaLabel="Date range" options={ranges.map((r) => ({ value: r.id, label: r.label }))} />
+            <SegmentedControl className="sm:ml-auto xl:ml-3" value={range} onChange={onRange} ariaLabel="Date range" options={ranges.map((r) => ({ value: r.id, label: r.label }))} />
           </div>
         </div>
         <div className="flex flex-col items-center gap-3 rounded-[var(--radius-xl)] border border-line bg-surface/60 px-6 pt-5 pb-4 backdrop-blur-md" data-hero-in>
@@ -110,7 +110,23 @@ export function DashboardHero({ range, onRange }: { range: RangeId; onRange: (r:
             <span className="font-medium text-fg">Q{Math.floor(now.getMonth() / 3) + 1} team quota</span>
             <span className="text-faint">{daysLeft} days left</span>
           </div>
-          <QuotaGauge value={pct} label={`${money(closed, true)} of ${money(quota, true)}`} />
+          <div className="flex w-full flex-col items-center gap-5 sm:flex-row sm:justify-center xl:flex-col">
+            <QuotaGauge value={pct} label={`${money(closed, true)} of ${money(quota, true)}`} />
+            <dl className="grid w-full max-w-xs grid-cols-3 gap-3 border-t border-line pt-3 text-center sm:max-w-[220px] sm:grid-cols-1 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-5 sm:text-left xl:hidden">
+              <div>
+                <dt className="text-[11px] text-faint">Closed</dt>
+                <dd className="tabular text-[15px] font-semibold text-fg">{money(closed, true)}</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] text-faint">To go</dt>
+                <dd className="tabular text-[15px] font-semibold text-accent">{money(quota - closed, true)}</dd>
+              </div>
+              <div>
+                <dt className="text-[11px] text-faint">Per day needed</dt>
+                <dd className="tabular text-[15px] font-semibold text-fg">{money((quota - closed) / Math.max(1, daysLeft), true)}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
     </section>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { allNavItems } from '@/config/navigation'
 import { useUI } from '@/store/ui'
 import { useTheme } from '@/store/theme'
+import { toggleSidebar } from './useSidebar'
 
 const isTyping = (e: KeyboardEvent) => {
   const t = e.target as HTMLElement
@@ -47,7 +48,7 @@ export function useHotkeys() {
       } else if (key === 'n') {
         e.preventDefault()
         ui.openQuickCreate('lead')
-      } else if (e.key === '[') useTheme.getState().toggleSidebar()
+      } else if (e.key === '[') toggleSidebar()
       else if (e.shiftKey && key === 'd') useTheme.getState().toggleMode()
     }
     window.addEventListener('keydown', onKey)

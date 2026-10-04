@@ -9,6 +9,8 @@ interface UIState {
   drawer: DrawerTarget
   mobileNavOpen: boolean
   assistantOpen: boolean
+  /** On tablet widths the sidebar is a rail; this opens it over the page. */
+  railOpen: boolean
   setCommandOpen: (open: boolean) => void
   openQuickCreate: (type: CreateType) => void
   closeQuickCreate: () => void
@@ -16,6 +18,7 @@ interface UIState {
   closeDrawer: () => void
   setMobileNavOpen: (open: boolean) => void
   setAssistantOpen: (open: boolean) => void
+  setRailOpen: (open: boolean) => void
 }
 
 export const useUI = create<UIState>()((set) => ({
@@ -24,6 +27,7 @@ export const useUI = create<UIState>()((set) => ({
   drawer: null,
   mobileNavOpen: false,
   assistantOpen: false,
+  railOpen: false,
   setCommandOpen: (commandOpen) => set({ commandOpen }),
   openQuickCreate: (quickCreate) => set({ quickCreate, commandOpen: false }),
   closeQuickCreate: () => set({ quickCreate: null }),
@@ -31,4 +35,5 @@ export const useUI = create<UIState>()((set) => ({
   closeDrawer: () => set({ drawer: null }),
   setMobileNavOpen: (mobileNavOpen) => set({ mobileNavOpen }),
   setAssistantOpen: (assistantOpen) => set({ assistantOpen }),
+  setRailOpen: (railOpen) => set({ railOpen }),
 }))

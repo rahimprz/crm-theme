@@ -43,6 +43,26 @@ To add a palette, copy an entry in `palettes`, give it a new `id`, `name` and co
 
 Components never use raw hex values. They use tokens like `bg-surface`, `text-muted`, `bg-primary` and `border-line`, so a palette change restyles the whole app.
 
+### Customize the sidebar
+
+The sidebar is built entirely from config:
+
+| What | Where |
+| --- | --- |
+| Page groups, icons, badges, hotkeys, "New" tags, foldable groups | `src/config/navigation.ts` → `navigation` |
+| Saved views (pre-filtered shortcuts with live counts) | `src/config/navigation.ts` → `savedViews` |
+| Live badge counters | `src/config/navigation.ts` → `badgeCounters` |
+| Product name, workspaces, AI credits, team presence | `src/config/app.ts` |
+| Which sections show (quick actions, views, favorites, team, credits) | `src/config/app.ts` → `sidebarSections`, or Settings → Appearance → Sidebar |
+
+Behavior:
+- Press `[` or use the header button to switch between the full sidebar and the icon rail.
+- Hovering the rail opens it as an overlay. On tablet widths (768–1279px) the rail is the default, so pages keep their room.
+- Group headers fold their section when clicked, and the app remembers this per browser.
+- A pill glides to the active page with a spring, and a soft highlight follows the pointer between rows. Badges bounce when their count changes.
+
+The sidebar's parts live in `src/components/layout/sidebar/`, one small file each.
+
 ### Add a page
 
 1. Create `src/pages/MyPage.tsx` (copy any page as a starting point).
@@ -89,7 +109,7 @@ House easings are registered in `src/lib/gsap.ts` as `volt` and `volt.out`. Sett
 
 ```
 src/
-  config/       themes.ts (colors) · navigation.ts (pages)
+  config/       themes.ts (colors) · navigation.ts (pages, views) · app.ts (brand, sidebar)
   data/         types · mock records · analytics series
   store/        crm (records) · theme · ui · toast
   lib/          gsap setup · formatters · chart math · confetti
@@ -102,6 +122,8 @@ src/
                 ActivityTimeline, NotificationsPanel, PalettePicker, Assistant
     dashboard/  one file per dashboard widget
     layout/     AppShell, Sidebar, Topbar, MobileTabBar, PageHeader
+      sidebar/  NavRow, WorkspaceSwitcher, QuickActions, SavedViews/Favorites/Team,
+                CreditsCard, ProfileCard, Collapse, CountBadge
   pages/        one file per screen
   styles/       index.css (design tokens and signature effects)
 ```
